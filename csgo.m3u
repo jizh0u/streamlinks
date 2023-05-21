@@ -1,7 +1,7 @@
 #EXTM3U
 #EXT-X-APP APTV
 #EXT-X-APTV-TYPE remote
-#EXT-X-SUB-URL https://ghproxy.com/https://raw.githubusercontent.com/Kimentanm/aptv/master/m3u/ya.m3u
+#EXT-X-SUB-URL https://ghproxy.com/https://raw.githubusercontent.com/jizh0u/streamlinks/main/csgo.m3u
 
 #EXTINF:-1 tvg-logo="https://huyaimg.msstatic.com/avatar/1086/b9/0a8766172da0a3f6757cc80943b4a2_180_135.jpg?1562180163" group-title="CSGO", CSBoy
 http://live.aptvapp.com/live/huya/123321?quality=10000
