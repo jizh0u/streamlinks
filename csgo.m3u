@@ -4,6 +4,6 @@
 #EXT-X-SUB-URL https://ghproxy.com/https://raw.githubusercontent.com/jizh0u/streamlinks/main/csgo.m3u
 
 #EXTINF:-1 tvg-logo="https://huyaimg.msstatic.com/avatar/1086/b9/0a8766172da0a3f6757cc80943b4a2_180_135.jpg?1562180163" group-title="CSGO", CSBoy
-http://148.135.93.213:81/live/huya/123321?quality=best
+https://live.iill.top/huya/123321?quality=best
 #EXTINF:-1 tvg-logo="https://apic.douyucdn.cn/upload/avatar_v3/201905/badbf01f7ab943358bf78bcd9245305f_big.jpg" group-title="CSGO", 玩机器
 http://148.135.93.213:81/live/douyu/6657?quality=best
