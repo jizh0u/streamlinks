@@ -128,7 +128,8 @@ function pushToTV(api, key, rec, cb) {
 
   var auth = parseCookie(st.cookie).map;
   var sig = auth.acf_auth + '|' + (st.ltp0 ? st.ltp0.slice(-12) : '');
-  if (sig === st.sig && now - (st.notifiedAt || 0) < (st.okAt ? QUIET_MS : RETRY_MS)) return finish();
+  var force = /[?&]surge_copy\b/.test($request.url); // e.g. https://www.douyu.com/?surge_copy=1
+  if (!force && sig === st.sig && now - (st.notifiedAt || 0) < (st.okAt ? QUIET_MS : RETRY_MS)) return finish();
   st.sig = sig;
   st.notifiedAt = now;
   st.okAt = 0;
