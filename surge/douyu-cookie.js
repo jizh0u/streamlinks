@@ -64,6 +64,17 @@ function saveState(s) { $persistentStore.write(JSON.stringify(s), STORE_STATE); 
 
 function finish() { $done({}); }
 
+function b64url(str) {
+  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+  var s = unescape(encodeURIComponent(str)), out = '';
+  for (var i = 0; i < s.length; i += 3) {
+    var n = (s.charCodeAt(i) << 16) | ((s.charCodeAt(i + 1) || 0) << 8) | (s.charCodeAt(i + 2) || 0);
+    out += chars[(n >> 18) & 63] + chars[(n >> 12) & 63] +
+      (i + 1 < s.length ? chars[(n >> 6) & 63] : '') + (i + 2 < s.length ? chars[n & 63] : '');
+  }
+  return out;
+}
+
 function verify(cookie, cb) {
   $httpClient.get({
     url: 'https://www.douyu.com/wgapi/livenc/liveweb/follow/top3',
@@ -134,7 +145,10 @@ function pushToTV(api, key, rec, cb) {
       console.log('[douyu-cookie] invalid: ' + why);
       return finish();
     }
-    var payload = st.cookie + (st.ltp0 ? '; LTP0=' + st.ltp0 : '');
+    // For the module parameter: with LTP0 only dy_did + LTP0 are needed (the TV renews the
+    // rest by itself), base64url-encoded so the Surge config line stays [A-Za-z0-9_-].
+    var did = auth.dy_did || auth.acf_did || '';
+    var payload = 'b64_' + b64url(st.ltp0 ? (did ? 'dy_did=' + did + '; ' : '') + 'LTP0=' + st.ltp0 : st.cookie);
     var rec = { cookie: st.cookie, ltp0: st.ltp0 || '', src: 'iphone', savedAt: now, nextRenewAt: now + RENEW_EVERY };
     $persistentStore.write(JSON.stringify(rec), STORE_AUTH);
     $persistentStore.write(st.cookie, STORE_LEGACY);

@@ -59,6 +59,10 @@ function parseArgument(str) {
   if (ck >= 0) {
     out.douyu_cookie = str.slice(ck + 'douyu_cookie='.length);
     str = str.slice(0, ck);
+    // b64_<base64url> = encoded cookie (what douyu-cookie.js copies): only [A-Za-z0-9_-],
+    // so it cannot break the Surge config line.
+    var b = /^\s*b64_([A-Za-z0-9_-]+)/.exec(out.douyu_cookie);
+    if (b) out.douyu_cookie = base64Decode(b[1].replace(/-/g, '+').replace(/_/g, '/'));
   }
   str.split('&').forEach(function (kv) {
     var i = kv.indexOf('=');
@@ -448,7 +452,11 @@ function douyuAuthReady(args, force) {
   var rec = authLoad(args);
   if (!rec) return Promise.resolve('');
   var now = Date.now();
-  if (!rec.ltp0 || (!force && now < (rec.nextRenewAt || 0))) return Promise.resolve(rec.cookie);
+  if (!rec.ltp0) return Promise.resolve(rec.cookie);
+  // Due every RENEW_EVERY; right away when only dy_did + LTP0 were supplied (no acf_auth
+  // yet), unless that already failed (then the retry schedule in nextRenewAt applies).
+  var bare = !cookieValue(rec.cookie, 'acf_auth') && !rec.lastError;
+  if (!force && !bare && now < (rec.nextRenewAt || 0)) return Promise.resolve(rec.cookie);
   return authRenew(rec).then(function (res) {
     var cookie = res.cookie;
     if (res.ltp0) rec.ltp0 = res.ltp0; // passport may rotate LTP0

@@ -135,7 +135,10 @@ Cookie 里带了 LTP0 后，Apple TV 上的 `live-redirect.js` 会每 3 天用�
 
 **二选一：Cookie 怎么到 Apple TV 上**
 
-A. 手动粘贴（稳）：iPhone 模块的 `tv_api` 保持 `none`。点通知，Surge 把 Cookie（含 LTP0）复制到剪贴板。粘贴到「虎牙/斗鱼直播」模块的 `douyu_cookie` 参数，重新部署到 Apple TV。有了自动续期，这一步几个月才做一次。
+A. 手动粘贴（稳）：iPhone 模块的 `tv_api` 保持 `none`。点通知，Surge 会复制一串 `b64_` 开头的短字符串（只含 `dy_did` 和 `LTP0`，编码成字母数字）。粘贴到「虎牙/斗鱼直播」模块的 `douyu_cookie` 参数，重新部署到 Apple TV。电视第一次打开斗鱼频道时，会用它换出整套登录 Cookie。之后每 3 天自动续期，这一步几个月才做一次。
+
+> [!IMPORTANT]
+> 不要把浏览器里复制的整串原始 Cookie 直接粘到 `douyu_cookie`。实测太长或带特殊字符时，会把整行脚本配置弄坏，连虎牙也一起失效（请求直接落到 FINAL）。请用通知复制出来的 `b64_...`。
 
 B. 自动推送（实验性，不用粘贴）：
 1. 在路由器里给 Apple TV 设一个固定 IP（DHCP 静态分配），比如 `192.168.1.20`。
