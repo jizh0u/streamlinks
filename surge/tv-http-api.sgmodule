@@ -1,0 +1,7 @@
+#!name=Apple TV 远程接口（仅 Apple TV，实验性）
+#!desc=在 Apple TV 的 Surge 上打开 HTTP API（局域网 6171 端口），让 iPhone 上的「斗鱼 Cookie 获取」模块把 Cookie 直接推过来。key 请填一串随机字母数字（至少 16 位），与 iPhone 模块的 tv_key 一致。接口是明文 HTTP，只在可信的家庭局域网里用。若部署后不生效，改为在 Apple TV 用的配置文件 [General] 里手动加一行：http-api = 你的key@0.0.0.0:6171
+#!arguments=key:change-me
+#!arguments-desc=key：随机字母数字，至少 16 位，务必改掉 change-me（iPhone 端遇到 change-me 会拒绝推送）。知道这个 key 的局域网设备都能在 Surge 上执行脚本。
+
+[General]
+http-api = {{{key}}}@0.0.0.0:6171

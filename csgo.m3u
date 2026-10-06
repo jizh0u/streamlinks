@@ -1,9 +1,18 @@
 #EXTM3U
 #EXT-X-APP APTV
 #EXT-X-APTV-TYPE remote
-#EXT-X-SUB-URL https://ghproxy.com/https://raw.githubusercontent.com/jizh0u/streamlinks/main/csgo.m3u
+#EXT-X-SUB-URL https://ghfast.top/https://raw.githubusercontent.com/jizh0u/streamlinks/main/csgo.m3u
 
 #EXTINF:-1 tvg-logo="https://huyaimg.msstatic.com/avatar/1086/b9/0a8766172da0a3f6757cc80943b4a2_180_135.jpg?1562180163" group-title="CSGO", CSBoy
-http://107.173.156.246:81/live/huya/123321?quality=best
+http://live.surge/huya/123321
 #EXTINF:-1 tvg-logo="https://apic.douyucdn.cn/upload/avatar_v3/201905/badbf01f7ab943358bf78bcd9245305f_big.jpg" group-title="CSGO", 玩机器
-http://107.173.156.246:81/live/douyu/6657?quality=best
+http://live.surge/douyu/6979222
+#EXTINF:-1 tvg-logo="https://huyaimg.msstatic.com/avatar/1086/b9/0a8766172da0a3f6757cc80943b4a2_180_135.jpg?1562180163" group-title="CSGO", CSBoy 20M转码
+http://live.surge/huya/123321?ratio=20000
+#EXTINF:-1 tvg-logo="https://apic.douyucdn.cn/upload/avatar_v3/201905/badbf01f7ab943358bf78bcd9245305f_big.jpg" group-title="CSGO", 玩机器 超清不断流
+http://live.surge/douyu/6979222?rate=3
+
+#EXTINF:-1 tvg-logo="https://huyaimg.msstatic.com/avatar/1086/b9/0a8766172da0a3f6757cc80943b4a2_180_135.jpg?1562180163" group-title="备用(不需要Surge)", CSBoy 备用
+https://cdn.ttvb.eu.org/huya/123321
+#EXTINF:-1 tvg-logo="https://apic.douyucdn.cn/upload/avatar_v3/201905/badbf01f7ab943358bf78bcd9245305f_big.jpg" group-title="备用(不需要Surge)", 玩机器 备用
+https://cdn.ttvb.eu.org/douyu/6979222

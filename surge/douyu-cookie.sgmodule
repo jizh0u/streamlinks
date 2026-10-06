@@ -1,0 +1,10 @@
+#!name=斗鱼 Cookie 获取（仅 iPhone）
+#!desc=开启后用 Safari 打开并登录 www.douyu.com，Surge 会自动抓取登录 Cookie（含用于自动续期的 LTP0）。填了 tv_api / tv_key 时直接推送到 Apple TV 上的 Surge，否则点通知复制。需要先配置并信任 MITM 证书。不要部署到 Apple TV。
+#!arguments=tv_api:none,tv_key:none
+#!arguments-desc=tv_api：Apple TV 的局域网 IP 加端口，如 192.168.1.20:6171（建议在路由器里给 Apple TV 固定 IP）；none 表示不推送，只复制。tv_key：Apple TV 上 http-api 的密钥（「Apple TV 远程接口」模块里填的那个），只用字母数字。
+
+[MITM]
+hostname = %APPEND% www.douyu.com, m.douyu.com, passport.douyu.com
+
+[Script]
+douyu-cookie = type=http-request,pattern=^https:\/\/(www|m|passport)\.douyu\.com\/,script-path=https://raw.githubusercontent.com/jizh0u/streamlinks/main/surge/douyu-cookie.js,timeout=20,argument="tv_api={{{tv_api}}}&tv_key={{{tv_key}}}"

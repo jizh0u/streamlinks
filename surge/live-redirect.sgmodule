@@ -1,0 +1,22 @@
+#!name=虎牙/斗鱼直播 · 本机解析
+#!desc=播放器打开 http://live.surge/huya/房间号 或 http://live.surge/douyu/房间号 时，由本机直连（家宽 IP）解析直播流并 302 跳转。虎牙默认原画；斗鱼有登录 Cookie 时取原画，否则是游客的蓝光4M。Cookie 里带 LTP0 时每 3 天自动续期。CDN 由平台按你自己的宽带调度。
+#!arguments=huya_cdn:auto,douyu_cdn:none,douyu_cookie:none
+#!arguments-desc=huya_cdn：auto / al / tx / hs。douyu_cdn：none 表示自动，也可填 hw-h5、tct-h5 等。douyu_cookie：斗鱼登录 Cookie（用「斗鱼 Cookie 获取」模块拿；如果开了自动推送到 Apple TV，这里保持 none 即可）。带 LTP0 时会自动续期，大约 2~3 个月才需要重新抓；不带 LTP0 约 6 天过期，过期后自动退回游客。none 表示游客（蓝光4M，CDN 每 5 分钟断开一次）。
+
+[General]
+# live.surge 是虚构域名，只由下面的脚本应答（80 端口本来就会被识别为 HTTP，这行只是保险）
+force-http-engine-hosts = %APPEND% live.surge
+
+[Rule]
+# 解析接口和 CDN 必须直连，平台才会按你的宽带分配节点
+DOMAIN-SUFFIX,huya.com,DIRECT
+DOMAIN-SUFFIX,douyu.com,DIRECT
+DOMAIN-SUFFIX,douyucdn.cn,DIRECT
+DOMAIN-SUFFIX,douyucdn2.cn,DIRECT
+# 虎牙 CDN 会 302 到 IP 直链（如 http://1.2.3.4/al.flv.huya.com/...）
+URL-REGEX,^http://\d+\.\d+\.\d+\.\d+(:\d+)?/.*huya\.com,DIRECT
+
+[Script]
+live-redirect = type=http-request,pattern=^https?:\/\/live\.surge(:\d+)?\/,script-path=https://raw.githubusercontent.com/jizh0u/streamlinks/main/surge/live-redirect.js,timeout=30,argument="huya_cdn={{{huya_cdn}}}&douyu_cdn={{{douyu_cdn}}}&douyu_cookie={{{douyu_cookie}}}"
+# 每 6 小时检查一次斗鱼登录是否该续期（实际最多 3 天续一次；没有 LTP0 时什么也不做）
+live-redirect-renew = type=cron,cronexp="23 */6 * * *",script-path=https://raw.githubusercontent.com/jizh0u/streamlinks/main/surge/live-redirect.js,timeout=30,wake-system=0,argument="huya_cdn={{{huya_cdn}}}&douyu_cdn={{{douyu_cdn}}}&douyu_cookie={{{douyu_cookie}}}"
