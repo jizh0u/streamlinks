@@ -574,13 +574,36 @@ function douyuPlay(room, q, args, userCookie) {
         rates.some(function (x) { return String(x.rate) === '0'; })) {
       console.log('[live-redirect] 斗鱼 已带 cookie，' + tries + ' 次请求都没拿到原画 (rate=' + d.rate + ')，cookie 可能已过期');
     }
-    return {
+    var out = {
       url: d.rtmp_url + '/' + d.rtmp_live,
       note: (d.rtmp_cdn || '') + ' rate=' + d.rate + (rateName ? ' ' + rateName : '') +
         (expire ? ' expire=' + expire : '') + (userCookie ? ' [cookie]' : ' [游客]') +
         (tries > 1 ? ' 第' + tries + '次请求' : ''),
     };
+    return douyuEdge(out.url).then(function (host) {
+      if (host) {
+        out.note += ' 边缘=' + host;
+        if (!DIRECT_HOST.test(host)) {
+          console.log('[live-redirect] ⚠️ 斗鱼 CDN 跳到了 ' + host + '，模块的直连规则没覆盖它，播放可能走了代理而卡顿。请把这个域名告诉作者，或自己加一条 DIRECT 规则');
+        }
+      }
+      return out;
+    });
   });
+}
+
+// Hosts the module routes DIRECT (keep in sync with [Rule] in live-redirect.sgmodule).
+var DIRECT_HOST = /douyu|livehwc|(^|\.)(huya\.com|tlivecdn\.com|myqcloud\.com|wscdns\.com|wsdvs\.com|alikunlun\.com|alivecdn\.com)$/i;
+
+// Douyu stream hosts answer with a 302 to an edge node (e.g. *.livehwc4.com). Ask once with
+// HEAD (no body) just to learn and log that host. Never fails; '' when unknown.
+function douyuEdge(url) {
+  return http('head', { url: url, timeout: 2, 'auto-redirect': false, headers: { 'User-Agent': UA_PC } })
+    .then(function (r) {
+      var loc = '';
+      Object.keys(r.headers || {}).forEach(function (k) { if (k.toLowerCase() === 'location') loc = r.headers[k]; });
+      return (/^https?:\/\/([^/:?#]+)/i.exec(loc) || [])[1] || '';
+    }, function () { return ''; });
 }
 
 // --------------------------------------------------------------------- main

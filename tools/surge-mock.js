@@ -51,7 +51,7 @@ function run(argv) {
       var hdrOut = dir + '/resp_headers.txt', bodyOut = dir + '/resp_body.txt';
       var headers = opts.headers || {};
       writeText(hdrIn, Object.keys(headers).map(function (k) { return k + ': ' + headers[k]; }).join('\n') + '\n');
-      var cmd = 'curl -s -m ' + (opts.timeout || 5) + ' -X ' + m.toUpperCase() + ' -H @' + sh(hdrIn) +
+      var cmd = 'curl -s -m ' + (opts.timeout || 5) + (m === 'head' ? ' -I' : ' -X ' + m.toUpperCase()) + ' -H @' + sh(hdrIn) +
         ' -D ' + sh(hdrOut) + ' -o ' + sh(bodyOut) + " -w '%{http_code}'";
       if (opts['auto-redirect'] !== false) cmd += ' -L';
       if (opts.body !== undefined) {

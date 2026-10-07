@@ -10,11 +10,20 @@ force-http-engine-hosts = %APPEND% live.surge
 [Rule]
 # 解析接口和 CDN 必须直连，平台才会按你的宽带分配节点
 DOMAIN-SUFFIX,huya.com,DIRECT
-DOMAIN-SUFFIX,douyu.com,DIRECT
-DOMAIN-SUFFIX,douyucdn.cn,DIRECT
-DOMAIN-SUFFIX,douyucdn2.cn,DIRECT
-# 虎牙 CDN 会 302 到 IP 直链（如 http://1.2.3.4/al.flv.huya.com/...）
-URL-REGEX,^http://\d+\.\d+\.\d+\.\d+(:\d+)?/.*huya\.com,DIRECT
+# 斗鱼：douyu.com、douyucdn.cn、douyucdn2.cn、douyuscdn.com 等
+DOMAIN-KEYWORD,douyu,DIRECT
+# 斗鱼的流地址会再 302 到各家 CDN 的边缘节点，这些也要直连，否则会走代理而卡顿
+# 华为云直播（实测 hw-h5 -> *.livehwc4.com，另有 livehwc3.cn 等）
+DOMAIN-KEYWORD,livehwc,DIRECT
+# 腾讯云 / 网宿 / 阿里云直播
+DOMAIN-SUFFIX,tlivecdn.com,DIRECT
+DOMAIN-SUFFIX,myqcloud.com,DIRECT
+DOMAIN-SUFFIX,wscdns.com,DIRECT
+DOMAIN-SUFFIX,wsdvs.com,DIRECT
+DOMAIN-SUFFIX,alikunlun.com,DIRECT
+DOMAIN-SUFFIX,alivecdn.com,DIRECT
+# 虎牙 / 斗鱼 CDN 会 302 到 IP 直链（如 http://1.2.3.4/al.flv.huya.com/...）
+URL-REGEX,^http://\d+\.\d+\.\d+\.\d+(:\d+)?/.*(huya\.com|douyu),DIRECT
 
 [Script]
 live-redirect = type=http-request,pattern=^https?:\/\/live\.surge(:\d+)?\/,script-path=https://raw.githubusercontent.com/jizh0u/streamlinks/main/surge/live-redirect.js,timeout=30,argument="huya_cdn={{{huya_cdn}}}&douyu_cdn={{{douyu_cdn}}}&douyu_cookie={{{douyu_cookie}}}"
